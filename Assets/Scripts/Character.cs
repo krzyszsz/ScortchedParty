@@ -103,7 +103,7 @@ public class Character : MonoBehaviour
     {
         var bulletStartPosition = weapon.position;
         var newBullet = Instantiate(Bullet, bulletStartPosition, Quaternion.identity);
-        newBullet.GetComponent<Rigidbody>().AddForce(weapon.right * 500, ForceMode.VelocityChange);
+        newBullet.GetComponent<Rigidbody>().AddForce(weapon.right * 200, ForceMode.VelocityChange);
         newBullet.GetComponent<Rigidbody>().AddTorque(new Vector3(2000f, 1000f, 500f), ForceMode.VelocityChange);
     }
 }
