@@ -10,9 +10,11 @@ public class MeshGenerator : MonoBehaviour
     private Mesh _mesh;
     private Vector3[] _verticles;
     private int[] _triangles;
+    private Color[] _colors;
 
     [SerializeField] private Material _material;
     [SerializeField] private PhysicMaterial _physicMaterial;
+    [SerializeField] private Gradient _gradient;
     private int _xSize = 100;
     private int _ySize = 100;
     private float _squareSide = 10f;
@@ -43,13 +45,6 @@ public class MeshGenerator : MonoBehaviour
                 )
             .ToArray();
 
-        //    new Vector3[]
-        //{
-        //    new Vector3(0, 0, 0),
-        //    new Vector3(0, 0, 100),
-        //    new Vector3(100, 0, 0)
-        //};
-
         _triangles = Enumerable.Range(0, pointsPerRowX * _ySize)
             .Where(i => i % pointsPerRowX != _xSize)
             .SelectMany(i => new int[]
@@ -57,6 +52,16 @@ public class MeshGenerator : MonoBehaviour
                 i, i+_xSize+1, i+1,
                 i+_xSize+1, i+_xSize+2, i+1
             }).ToArray();
+
+
+        var minHeight = _verticles.Min(x => x.y);
+        var maxHeight = _verticles.Max(x => x.y);
+        _colors = new Color[_verticles.Length];
+        for (var i=0; i < _verticles.Length; i++)
+        {
+            var height = Mathf.InverseLerp(minHeight, maxHeight, _verticles[i].y);
+            _colors[i] = _gradient.Evaluate(height);
+        }
     }
 
     void UpdateMesh()
@@ -64,13 +69,8 @@ public class MeshGenerator : MonoBehaviour
         _mesh.Clear();
         _mesh.vertices = _verticles;
         _mesh.triangles = _triangles;
+        _mesh.colors = _colors;
         _mesh.RecalculateBounds();
         _mesh.RecalculateNormals();
     }
-
-    // Update is called once per frame
-    //void Update()
-    //{
-
-    //}
 }
