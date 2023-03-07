@@ -17,7 +17,7 @@ public class MeshGenerator : MonoBehaviour
     [SerializeField] private Gradient _gradient;
     private int _xSize = 255;
     private int _ySize = 255;
-    private float _squareSide = 1f;
+    private float _squareSide = 5f;
 
     // Start is called before the first frame update
     void Start()
@@ -63,14 +63,18 @@ public class MeshGenerator : MonoBehaviour
         float[][] blurringMemoryBuffer = new float[terrain1.Length][];
         for (var i=0; i< blurringIterations; i++)
         {
-            BlurTerrain(terrain1, blurringMemoryBuffer, 3, false, 0.035f);
+            BlurTerrain(terrain1, blurringMemoryBuffer, 3, false, 0.025f);
         }
 
         var terrain2 = GetRandomTerrain();
+        for (var x = 0; x < _xSize + 1; x++) for (var y = 0; y < _ySize + 1; y++)
+        {
+            if (x<=50 || x>=71 || y<=50 || y>=71) terrain2[x][y] = -100;
+        }
         blurringIterations = 200; // Can be exposed as a parameter.
         for (var i = 0; i < blurringIterations; i++)
         {
-            BlurTerrain(terrain2, blurringMemoryBuffer, 50, true, 0.015f);
+            BlurTerrain(terrain2, blurringMemoryBuffer, 50, true, 0.005f);
         }
 
         Rescale(terrain2, blurringMemoryBuffer,
